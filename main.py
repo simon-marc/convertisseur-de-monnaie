@@ -12,7 +12,6 @@ col4='#000000' #black
 
 currency = ['CAD', 'USD' , 'EUR' , 'GBP' , 'AUD' , 'INR' , 'CAD' , 'INR', 'NZF', 'CHF']
 currency_rate = { 'EUR':1, 'USD':1.08,'CAD' :1.45, 'GBP':1.13, 'AUD':1.54,'INR':88.80,'NZF':1.79,'CHF':1.0}
-tag = [ '£', '$' ,'A$','$NZ','€','Fr','₹']
 
 gui = Tk()
 gui.geometry('400x600')
