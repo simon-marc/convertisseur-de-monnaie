@@ -11,67 +11,43 @@ col3='#ffe599' #yellow
 col4='#000000' #black
 
 currency = ['CAD', 'USD' , 'EUR' , 'GBP' , 'AUD' , 'INR' , 'CAD' , 'INR', 'NZF', 'CHF']
+currency_rate = { 'EUR':1, 'USD':1.08,'CAD' :1.45, 'GBP':1.13, 'AUD':1.54,'INR':88.80,'NZF':1.79,'CHF':1.0}
 tag = [ '£', '$' ,'A$','$NZ','€','Fr','₹']
 
 gui = Tk()
 gui.geometry('400x600')
 gui.title('Currency Converter')
 gui.configure(bg=col2)
-gui.resizable(height=TRUE, width=FALSE)
+gui.resizable(height=FALSE, width=FALSE)
 
-#Link de l'API avec le fichier .json
-#Définition des signes monétaires
-#Mise en place d'une condition en cas d'erreur de la part de l'utilisateur
+#Fonction de convertion avec l'historique
 def convert():
     currency_1 = combo1.get()
     currency_2 = combo2.get()
     amount = value.get()
+
     try:
-        amount= float(value.get())
+        amount = float(value.get())
         if type(amount) == float:
             error.config(text="")
     except:
-        error.config(text="Please enter a number!")
+        error.config(text="Please enter a number", fg="red")
     try:
-        if currency_1 == "" or currency_2 == "" :
-            error.config(text="Please add a currency!")
+        if combo1.get() == "" or combo2.get() == "":
+            error.config(text="Please add a currency", fg="red")
     except:
         error.config(text="")
+    try:
+        if combo1.get() not in currency_rate or combo2.get() not in currency_rate:
+            error.config(text="Please add a currency", fg="red")
+    except:
+        error.config(text="")
+    output = float(amount)*(float(currency_rate[combo2.get()])/float(currency_rate[combo1.get()]))  
+    result.config(text=output)
+    
+    historic.insert(END, (currency_1,"=>", currency_2, "=", output) )
 
-    querystring = {"from":currency_1,"to":currency_2,"amount":amount}
-
-    if currency_2 == 'USD':
-        tag = '$'
-    elif currency_2 == 'EUR':
-        tag = '€'
-    elif currency_2 == 'GBP':
-        tag = '£'
-    elif currency_2 == 'AUD':
-        tag = 'A$'
-    elif currency_2 == 'NZF':
-        tag = '$NZ'
-    elif currency_2 == 'CHF':
-        tag = 'Fr'
-    elif currency_2 == 'INR':
-        tag = '₹'
-    elif currency_2 == 'CAD':
-        tag = '$CAD'
-
-    url = "https://currency-converter18.p.rapidapi.com/api/v1/convert"
-    headers = {
-	"X-RapidAPI-Key": "eea352303amsh5f404adb07dc2ebp1cdaa1jsn297be566125f",
-	"X-RapidAPI-Host": "currency-converter18.p.rapidapi.com"}
-    response = requests.request("GET", url, headers=headers, params=querystring)
-
-    database = json.loads(response.text)
-    converted_amount = database['result']['convertedAmount']
-    settings = tag +" {:,.2f}".format(converted_amount)
-    result['text'] = settings
-    historic.insert(END, (currency_1,"=>", currency_2, "=", converted_amount) )
-
-    print(converted_amount, settings)
-
-
+ 
 #Gui
 
 header = Frame(gui, width=400, height=70, bg=col3)
